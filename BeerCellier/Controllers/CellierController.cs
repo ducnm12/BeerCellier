@@ -115,6 +115,38 @@ namespace BeerCellier.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: Cellier/Drink/5
+        public ActionResult Drink(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Beer beer = db.Beers.Find(id);
+            if (beer == null)
+            {
+                return HttpNotFound();
+            }
+            return View(beer);
+        }
+
+        // POST: Cellier/Drink/5
+        [HttpPost, ActionName("Drink")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DrinkConfirmed(int id)
+        {
+            Beer beer = db.Beers.Find(id);
+            beer.Quantity -= 1;
+
+            if (beer.Quantity < 0)
+            {
+                beer.Quantity = 0;
+            }
+
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

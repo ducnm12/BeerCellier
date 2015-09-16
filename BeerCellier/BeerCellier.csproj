@@ -182,6 +182,7 @@
     <Content Include="Views\Cellier\Details.cshtml" />
     <Content Include="Views\Cellier\Edit.cshtml" />
     <Content Include="Views\Cellier\Index.cshtml" />
+    <Content Include="Views\Cellier\Drink.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
