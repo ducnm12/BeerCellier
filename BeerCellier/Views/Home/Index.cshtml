@@ -5,5 +5,7 @@
 <div class="jumbotron">
     <h1>BeerCellier</h1>
     <p class="lead">Manage your beer stocks efficiently</p>
-    <p><a href="/" class="btn btn-primary btn-lg">Go in my cellier &raquo;</a></p>
+    <p>
+        @Html.ActionLink("Go in my cellier »", "Index", "Cellier", null, new  { @class = "btn btn-primary btn-lg" })
+    </p>
 </div>
