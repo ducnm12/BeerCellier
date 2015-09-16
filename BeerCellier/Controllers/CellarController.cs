@@ -10,17 +10,17 @@ using BeerFridge.Models;
 
 namespace BeerCellier.Controllers
 {
-    public class CellierController : Controller
+    public class CellarController : Controller
     {
         private AppDbContext db = new AppDbContext();
 
-        // GET: Cellier
+        // GET: Cellar
         public ActionResult Index()
         {
             return View(db.Beers.ToList());
         }
 
-        // GET: Cellier/Details/5
+        // GET: Cellar/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -35,13 +35,13 @@ namespace BeerCellier.Controllers
             return View(beer);
         }
 
-        // GET: Cellier/Create
+        // GET: Cellar/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Cellier/Create
+        // POST: Cellar/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -58,7 +58,7 @@ namespace BeerCellier.Controllers
             return View(beer);
         }
 
-        // GET: Cellier/Edit/5
+        // GET: Cellar/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -73,7 +73,7 @@ namespace BeerCellier.Controllers
             return View(beer);
         }
 
-        // POST: Cellier/Edit/5
+        // POST: Cellar/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -89,7 +89,7 @@ namespace BeerCellier.Controllers
             return View(beer);
         }
 
-        // GET: Cellier/Delete/5
+        // GET: Cellar/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -104,7 +104,7 @@ namespace BeerCellier.Controllers
             return View(beer);
         }
 
-        // POST: Cellier/Delete/5
+        // POST: Cellar/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -115,7 +115,7 @@ namespace BeerCellier.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Cellier/Drink/5
+        // GET: Cellar/Drink/5
         public ActionResult Drink(int? id)
         {
             if (id == null)
@@ -130,7 +130,7 @@ namespace BeerCellier.Controllers
             return View(beer);
         }
 
-        // POST: Cellier/Drink/5
+        // POST: Cellar/Drink/5
         [HttpPost, ActionName("Drink")]
         [ValidateAntiForgeryToken]
         public ActionResult DrinkConfirmed(int id)

@@ -128,7 +128,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\CellierController.cs" />
+    <Compile Include="Controllers\CellarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -177,12 +177,12 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Cellier\Create.cshtml" />
-    <Content Include="Views\Cellier\Delete.cshtml" />
-    <Content Include="Views\Cellier\Details.cshtml" />
-    <Content Include="Views\Cellier\Edit.cshtml" />
-    <Content Include="Views\Cellier\Index.cshtml" />
-    <Content Include="Views\Cellier\Drink.cshtml" />
+    <Content Include="Views\Cellar\Create.cshtml" />
+    <Content Include="Views\Cellar\Delete.cshtml" />
+    <Content Include="Views\Cellar\Details.cshtml" />
+    <Content Include="Views\Cellar\Edit.cshtml" />
+    <Content Include="Views\Cellar\Index.cshtml" />
+    <Content Include="Views\Cellar\Drink.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
