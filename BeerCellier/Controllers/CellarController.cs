@@ -143,6 +143,7 @@ namespace BeerCellier.Controllers
             return RedirectToAction("Index");
         }
        
+        // GET: Cellar/Search?searchTerm=
         public ActionResult Search(string searchTerm)
         {
             var query = db.Beers.AsQueryable();
@@ -158,7 +159,20 @@ namespace BeerCellier.Controllers
             }
 
             return View(query.AsEnumerable());
-        }        
+        }
+
+        // GET: /Cellar/QuickSearch?term=
+        public ActionResult QuickSearch(string term)
+        {
+            var model = db.Beers
+                .Where(b => b.Name.StartsWith(term))
+                .Take(10)
+                .Select(b => new {
+                    label = b.Name
+                });
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
 
         protected override void Dispose(bool disposing)
         {

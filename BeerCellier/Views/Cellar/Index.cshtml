@@ -9,9 +9,15 @@
 <br />
 
 <div>
-    <form method="get" action="@Url.Action("Search")" data-beercellier-ajax="true" data-beercellier-target="#beerList">
-        <input type="search" name="searchTerm" />
-        <input type="submit" value="Search" />
+    <form method="get" 
+          action="@Url.Action("Search")" 
+          data-beercellier-ajax="true" 
+          data-beercellier-target="#beerList">
+        <input type="search" 
+               name="searchTerm" 
+               data-beercellier-autocomplete="@Url.Action("QuickSearch")" />
+        <input type="submit" 
+               value="Search" />
     </form>
 </div>
 
