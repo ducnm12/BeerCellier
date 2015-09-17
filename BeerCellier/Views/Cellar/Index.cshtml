@@ -6,35 +6,15 @@
 
 <h2>My Cellar</h2>
 
-<p>
-    @Html.ActionLink("Add a beer", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </th>
-        <th></th>
-    </tr>
+<br />
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Quantity)
-        </td>
-        <td>           
-            @Html.ActionLink("Drink a beer", "Drink", new { id = item.ID }) |
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
+<div>
+    <form method="get" action="@Url.Action("Search")" data-beercellier-ajax="true" data-beercellier-target="#beerList">
+        <input type="search" name="searchTerm" />
+        <input type="submit" value="Search" />
+    </form>
+</div>
 
-</table>
+<br />
+
+@Html.Partial("_BeerList", Model)

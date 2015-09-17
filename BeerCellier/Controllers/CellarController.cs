@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using BeerFridge.Models;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using BeerFridge.Models;
 
 namespace BeerCellier.Controllers
 {
@@ -146,6 +142,23 @@ namespace BeerCellier.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+       
+        public ActionResult Search(string searchTerm)
+        {
+            var query = db.Beers.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(b => b.Name.Contains(searchTerm));
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_BeerList", query.AsEnumerable());
+            }
+
+            return View(query.AsEnumerable());
+        }        
 
         protected override void Dispose(bool disposing)
         {

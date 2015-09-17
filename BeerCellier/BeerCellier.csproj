@@ -149,6 +149,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -183,6 +184,7 @@
     <Content Include="Views\Cellar\Edit.cshtml" />
     <Content Include="Views\Cellar\Index.cshtml" />
     <Content Include="Views\Cellar\Drink.cshtml" />
+    <Content Include="Views\Cellar\_BeerList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
