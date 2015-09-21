@@ -1,4 +1,4 @@
-﻿using BeerFridge.Models;
+﻿using BeerCellier.Models;
 using PagedList;
 using System.Data.Entity;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace BeerCellier.Controllers
 {
+    [Authorize]
     public class CellarController : Controller
     {
         private AppDbContext db = new AppDbContext();

@@ -23,6 +23,18 @@
                     <li>@Html.ActionLink("My Cellar", "Index", "Cellar")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>                
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Request.IsAuthenticated)
+                    {                        
+                        <li>@Html.ActionLink("Logout", "Logout", "Authentication")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Register", "Register", "Authentication")</li>
+                        <li role="separator" class="divider"></li>
+                        <li>@Html.ActionLink("Login", "Login", "Authentication")</li>
+                    }
                 </ul>
             </div>
         </div>
