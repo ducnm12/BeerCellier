@@ -11,9 +11,21 @@ namespace BeerCellier.Controllers
         private AppDbContext db = new AppDbContext();
 
         // GET: Cellar
-        public ActionResult Index()
+        public ActionResult Index(string searchTerm)
         {
-            return View(db.Beers.ToList());
+            var query = db.Beers.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(b => b.Name.Contains(searchTerm));
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_BeerList", query.AsEnumerable());
+            }
+
+            return View(query.AsEnumerable());
         }
 
         // GET: Cellar/Details/5
@@ -141,24 +153,6 @@ namespace BeerCellier.Controllers
 
             db.SaveChanges();
             return RedirectToAction("Index");
-        }
-       
-        // GET: Cellar/Search?searchTerm=
-        public ActionResult Search(string searchTerm)
-        {
-            var query = db.Beers.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
-                query = query.Where(b => b.Name.Contains(searchTerm));
-            }
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("_BeerList", query.AsEnumerable());
-            }
-
-            return View(query.AsEnumerable());
         }
 
         // GET: /Cellar/QuickSearch?term=
