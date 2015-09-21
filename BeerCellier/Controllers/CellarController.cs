@@ -1,4 +1,5 @@
 ﻿using BeerFridge.Models;
+using PagedList;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -11,7 +12,7 @@ namespace BeerCellier.Controllers
         private AppDbContext db = new AppDbContext();
 
         // GET: Cellar
-        public ActionResult Index(string searchTerm)
+        public ActionResult Index(string searchTerm, int? page)
         {
             var query = db.Beers.AsQueryable();
 
@@ -20,12 +21,16 @@ namespace BeerCellier.Controllers
                 query = query.Where(b => b.Name.Contains(searchTerm));
             }
 
+            query = query.OrderBy(b => b.Name);
+
+            var pageNumber = page ?? 1;
+
             if (Request.IsAjaxRequest())
             {
-                return PartialView("_BeerList", query.AsEnumerable());
+                return PartialView("_BeerList", query.ToPagedList(pageNumber, 3));
             }
 
-            return View(query.AsEnumerable());
+            return View(query.ToPagedList(pageNumber, 3));
         }
 
         // GET: Cellar/Details/5

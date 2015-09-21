@@ -29,7 +29,8 @@ namespace BeerCellier
             bundles.Add(new StyleBundle("~/Content/css").Include(                                            
                       "~/Content/themes/base/all.css",
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/PagedList.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
                 "~/Scripts/app.js"));
