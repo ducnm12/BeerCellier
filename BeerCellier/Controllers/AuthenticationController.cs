@@ -10,7 +10,12 @@ namespace BeerCellier.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private AppDbContext db = new AppDbContext();
+        private readonly AppDbContext db;
+
+        public AuthenticationController(AppDbContext context)
+        {
+            db = context;
+        }
 
         public ActionResult Login()
         {
@@ -90,21 +95,6 @@ namespace BeerCellier.Controllers
             authenticationManager.SignOut();
             
             return RedirectToAction("Index", "Home");
-        }
-
-        private bool ValidateUser(string login, string password)
-        {
-            // TODO:
-            return login == password;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

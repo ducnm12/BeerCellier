@@ -12,7 +12,12 @@ namespace BeerCellier.Controllers
     [Authorize]
     public class CellarController : Controller
     {
-        private AppDbContext db = new AppDbContext();
+        private readonly AppDbContext db;
+
+        public CellarController(AppDbContext context)
+        {
+            db = context;
+        }
 
         // GET: Cellar
         public ActionResult Index(string searchTerm, int? page)
@@ -222,15 +227,6 @@ namespace BeerCellier.Controllers
                 });
 
             return Json(model, JsonRequestBehavior.AllowGet);
-        }        
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }        
+        }   
     }    
 }
