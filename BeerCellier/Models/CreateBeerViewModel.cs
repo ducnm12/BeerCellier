@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BeerCellier.Models
 {
-    public class Beer
+    public class CreateBeerViewModel
     {
-        public int ID { get; set; }
-
         [Required()]
         [MaxLength(80)]
         public string Name { get; set; }
@@ -14,8 +12,5 @@ namespace BeerCellier.Models
         [Required()]
         [Range(0, Int32.MaxValue)]
         public int Quantity { get; set; }
-
-        [Required()]
-        public User Owner { get; set; }
-    }    
+    }
 }

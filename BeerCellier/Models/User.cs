@@ -36,6 +36,6 @@ namespace BeerCellier.Models
         public bool IsPasswordValid(string password)
         {
             return hasher.Check(password, new HashedPassword(Hash, Salt));
-        }
+        }        
     }
 }

@@ -179,9 +179,15 @@
     <Compile Include="Migrations\201509211931182_Security.Designer.cs">
       <DependentUpon>201509211931182_Security.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201509212102253_Owner.cs" />
+    <Compile Include="Migrations\201509212102253_Owner.Designer.cs">
+      <DependentUpon>201509212102253_Owner.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Beer.cs" />
     <Compile Include="Models\AppDbContext.cs" />
+    <Compile Include="Models\CreateBeerViewModel.cs" />
+    <Compile Include="Models\Queries.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\User.cs" />
@@ -286,6 +292,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201509211931182_Security.resx">
       <DependentUpon>201509211931182_Security.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509212102253_Owner.resx">
+      <DependentUpon>201509212102253_Owner.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

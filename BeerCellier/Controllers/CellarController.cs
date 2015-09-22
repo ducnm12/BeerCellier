@@ -17,8 +17,10 @@ namespace BeerCellier.Controllers
         {
             var query = db.Beers.AsQueryable();
 
+            query = query.ForUser(User);
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
+            {               
                 query = query.Where(b => b.Name.Contains(searchTerm));
             }
 
@@ -60,16 +62,24 @@ namespace BeerCellier.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Quantity")] Beer beer)
+        public ActionResult Create([Bind(Include = "Name,Quantity")] CreateBeerViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var beer = new Beer
+                {
+                    Quantity = viewModel.Quantity,
+                    Name = viewModel.Name,
+                    Owner = db.Users.FindUser(User)
+                };
+
                 db.Beers.Add(beer);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                return RedirectToAction("Index");          
             }
 
-            return View(beer);
+            return View(viewModel);
         }
 
         // GET: Cellar/Edit/5
@@ -165,6 +175,7 @@ namespace BeerCellier.Controllers
         public ActionResult QuickSearch(string term)
         {
             var model = db.Beers
+                .ForUser(User)
                 .Where(b => b.Name.StartsWith(term))
                 .Take(10)
                 .Select(b => new {
@@ -172,7 +183,7 @@ namespace BeerCellier.Controllers
                 });
 
             return Json(model, JsonRequestBehavior.AllowGet);
-        }
+        }        
 
         protected override void Dispose(bool disposing)
         {
@@ -181,6 +192,6 @@ namespace BeerCellier.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-    }
+        }        
+    }    
 }
