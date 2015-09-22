@@ -184,14 +184,17 @@
       <DependentUpon>201509212102253_Owner.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Beer.cs" />
-    <Compile Include="Models\AppDbContext.cs" />
+    <Compile Include="Entities\Beer.cs" />
+    <Compile Include="Entities\AppDbContext.cs" />
+    <Compile Include="Models\BeerViewModel.cs" />
     <Compile Include="Models\CreateBeerViewModel.cs" />
-    <Compile Include="Models\Queries.cs" />
+    <Compile Include="Models\EditBeerViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\BeerQueries.cs" />
+    <Compile Include="Queries\UserQueries.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />

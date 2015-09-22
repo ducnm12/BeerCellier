@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using BeerCellier.Entities;
 
 namespace BeerCellier.Models
 {
-    public class Beer
-    {
+    public class EditBeerViewModel
+    {           
         public int ID { get; set; }
 
         [Required()]
@@ -15,7 +16,13 @@ namespace BeerCellier.Models
         [Range(0, Int32.MaxValue)]
         public int Quantity { get; set; }
 
-        [Required()]
-        public User Owner { get; set; }
-    }    
+        public EditBeerViewModel() { }
+
+        public EditBeerViewModel(Beer beer)
+        {
+            ID = beer.ID;
+            Name = beer.Name;
+            Quantity = beer.Quantity;
+        }
+    }
 }

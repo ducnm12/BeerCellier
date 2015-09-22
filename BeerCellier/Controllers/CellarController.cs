@@ -1,4 +1,6 @@
-﻿using BeerCellier.Models;
+﻿using BeerCellier.Entities;
+using BeerCellier.Models;
+using BeerCellier.Queries;
 using PagedList;
 using System.Data.Entity;
 using System.Linq;
@@ -15,25 +17,24 @@ namespace BeerCellier.Controllers
         // GET: Cellar
         public ActionResult Index(string searchTerm, int? page)
         {
-            var query = db.Beers.AsQueryable();
-
-            query = query.ForUser(User);
+            var query = db.Beers.ForUser(User);            
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {               
                 query = query.Where(b => b.Name.Contains(searchTerm));
             }
-
+           
             query = query.OrderBy(b => b.Name);
 
             var pageNumber = page ?? 1;
+            var model = query.ToViewModels().ToPagedList(pageNumber, 5);
 
             if (Request.IsAjaxRequest())
             {
-                return PartialView("_BeerList", query.ToPagedList(pageNumber, 3));
+                return PartialView("_BeerList", model);
             }
 
-            return View(query.ToPagedList(pageNumber, 3));
+            return View(model);
         }
 
         // GET: Cellar/Details/5
@@ -43,12 +44,17 @@ namespace BeerCellier.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Beer beer = db.Beers.Find(id);
+
+            var beer = db.Beers.FindById(id.Value);
+            
             if (beer == null)
             {
                 return HttpNotFound();
             }
-            return View(beer);
+
+            var model = new BeerViewModel(beer);
+
+            return View(model);
         }
 
         // GET: Cellar/Create
@@ -62,14 +68,14 @@ namespace BeerCellier.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,Quantity")] CreateBeerViewModel viewModel)
+        public ActionResult Create([Bind(Include = "Name,Quantity")] CreateBeerViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var beer = new Beer
                 {
-                    Quantity = viewModel.Quantity,
-                    Name = viewModel.Name,
+                    Quantity = model.Quantity,
+                    Name = model.Name,
                     Owner = db.Users.FindUser(User)
                 };
 
@@ -79,7 +85,7 @@ namespace BeerCellier.Controllers
                 return RedirectToAction("Index");          
             }
 
-            return View(viewModel);
+            return View(model);
         }
 
         // GET: Cellar/Edit/5
@@ -89,12 +95,17 @@ namespace BeerCellier.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Beer beer = db.Beers.Find(id);
+
+            var beer = db.Beers.FindById(id.Value);
+
             if (beer == null)
             {
                 return HttpNotFound();
             }
-            return View(beer);
+
+            var model = new EditBeerViewModel(beer);
+
+            return View(model);
         }
 
         // POST: Cellar/Edit/5
@@ -102,15 +113,26 @@ namespace BeerCellier.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Quantity")] Beer beer)
+        public ActionResult Edit([Bind(Include = "ID,Name,Quantity")] EditBeerViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var beer = db.Beers.FindById(model.ID);
+
+                if (beer == null)
+                {
+                    return HttpNotFound();
+                }
+
+                beer.Name = model.Name;
+                beer.Quantity = model.Quantity;
+
                 db.Entry(beer).State = EntityState.Modified;
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            return View(beer);
+            return View(model);
         }
 
         // GET: Cellar/Delete/5
@@ -120,12 +142,17 @@ namespace BeerCellier.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Beer beer = db.Beers.Find(id);
+
+            var beer = db.Beers.Find(id);
+
             if (beer == null)
             {
                 return HttpNotFound();
             }
-            return View(beer);
+
+            var model = new BeerViewModel(beer);
+
+            return View(model);
         }
 
         // POST: Cellar/Delete/5
@@ -146,12 +173,17 @@ namespace BeerCellier.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Beer beer = db.Beers.Find(id);
+
+            var beer = db.Beers.Find(id);
+
             if (beer == null)
             {
                 return HttpNotFound();
             }
-            return View(beer);
+
+            var model = new BeerViewModel(beer);
+
+            return View(model);
         }
 
         // POST: Cellar/Drink/5
@@ -159,7 +191,13 @@ namespace BeerCellier.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DrinkConfirmed(int id)
         {
-            Beer beer = db.Beers.Find(id);
+            Beer beer = db.Beers.FindById(id);
+
+            if (beer == null)
+            {
+                return HttpNotFound();
+            }
+
             beer.Quantity -= 1;
 
             if (beer.Quantity < 0)
@@ -167,7 +205,9 @@ namespace BeerCellier.Controllers
                 beer.Quantity = 0;
             }
 
+            db.Entry(beer).State = EntityState.Modified;
             db.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
@@ -175,8 +215,7 @@ namespace BeerCellier.Controllers
         public ActionResult QuickSearch(string term)
         {
             var model = db.Beers
-                .ForUser(User)
-                .Where(b => b.Name.StartsWith(term))
+                .Search(User, term)
                 .Take(10)
                 .Select(b => new {
                     label = b.Name

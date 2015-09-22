@@ -1,4 +1,4 @@
-﻿@model BeerCellier.Models.Beer
+﻿@model BeerCellier.Models.BeerViewModel
 
 @{
     ViewBag.Title = "Beer details";
@@ -6,9 +6,8 @@
 
 <h2>Beer details</h2>
 
-<div>
-    <h4>Beer</h4>
-    <hr />
+<div>    
+    <hr>
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)

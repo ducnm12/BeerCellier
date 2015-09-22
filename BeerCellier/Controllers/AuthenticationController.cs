@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using System.Linq;
+using BeerCellier.Entities;
 
 namespace BeerCellier.Controllers
 {

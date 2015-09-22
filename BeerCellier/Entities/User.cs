@@ -1,7 +1,7 @@
 ﻿using PwdHasher;
 using System.ComponentModel.DataAnnotations;
 
-namespace BeerCellier.Models
+namespace BeerCellier.Entities
 {
     public class User
     {
