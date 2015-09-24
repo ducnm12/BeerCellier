@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Practices.Unity;
-using Microsoft.Practices.Unity.Configuration;
-using BeerCellier.Entities;
+using BeerCellier.Core;
+using BeerCellier.Controllers;
 
 namespace BeerCellier.App_Start
 {
@@ -39,7 +39,16 @@ namespace BeerCellier.App_Start
             // TODO: Register your types here
             // container.RegisterType<IProductRepository, ProductRepository>();
 
-            container.RegisterType<AppDbContext>(new PerRequestLifetimeManager());
+            container.RegisterType<IPersistenceContext, PersistenceContext>(new PerRequestLifetimeManager());
+
+            container.RegisterType<ISessionContext, SessionContext>(new PerRequestLifetimeManager());
+
+            container.RegisterType<CellarController>(
+                new PerRequestLifetimeManager(), 
+                new InjectionConstructor(
+                    new ResolvedParameter<IPersistenceContext>(), 
+                    new ResolvedParameter<ISessionContext>(), 
+                    new InjectionParameter<int>(5)));
         }
     }
 }

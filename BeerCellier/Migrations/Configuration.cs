@@ -1,16 +1,17 @@
 namespace BeerCellier.Migrations
 {
+    using Core;
     using Entities;
     using System.Data.Entity.Migrations;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<AppDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<PersistenceContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(AppDbContext context)
+        protected override void Seed(PersistenceContext context)
         {
             var adminUser = new User("admin", "p@ssw0rd");
 

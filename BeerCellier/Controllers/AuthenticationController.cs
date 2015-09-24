@@ -1,20 +1,19 @@
 ﻿using BeerCellier.Models;
-using Microsoft.AspNet.Identity;
-using System.Security.Claims;
-using System.Web;
 using System.Web.Mvc;
-using System.Linq;
 using BeerCellier.Entities;
+using BeerCellier.Core;
 
 namespace BeerCellier.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private readonly AppDbContext db;
+        private readonly IPersistenceContext _persistenceContext;
+        private readonly ISessionContext _sessionContext;
 
-        public AuthenticationController(AppDbContext context)
+        public AuthenticationController(IPersistenceContext persistenceContext, ISessionContext sessionContext)
         {
-            db = context;
+            _persistenceContext = persistenceContext;
+            _sessionContext = sessionContext;
         }
 
         public ActionResult Login()
@@ -31,36 +30,19 @@ namespace BeerCellier.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
-            }
+            }           
 
-            var user = db.Users
-                .Where(u => u.Username == model.Username)
-                .SingleOrDefault();
-
-            if (user == null)
+            if (!_sessionContext.SignIn(model.Username, model.Password))
             {
                 ModelState.AddModelError(string.Empty, "Username or password is invalid.");
                 return View(model);
             }
-
-            if (!user.IsPasswordValid(model.Password))
-            {
-                ModelState.AddModelError(string.Empty, "Username or password is invalid.");
-                return View(model);
-            }
-            
-            var loginClaim = new Claim(ClaimTypes.NameIdentifier, model.Username);
-            var claimsIdentity = new ClaimsIdentity(new[] { loginClaim }, DefaultAuthenticationTypes.ApplicationCookie);
-            var ctx = Request.GetOwinContext();
-            var authenticationManager = ctx.Authentication;
-
-            authenticationManager.SignIn(claimsIdentity);
 
             if (Url.IsLocalUrl(ViewBag.ReturnUrl))
             {
                 return Redirect(ViewBag.ReturnUrl);
             }            
-
+            
             return RedirectToAction("Index", "Home");
         }
 
@@ -80,8 +62,8 @@ namespace BeerCellier.Controllers
 
             var user = new User(model.Username, model.Password);
 
-            db.Users.Add(user);
-            db.SaveChanges();
+            _persistenceContext.Add(user);
+            _persistenceContext.SaveChanges();
 
             return RedirectToAction("Index", "Home");
         }
@@ -89,11 +71,7 @@ namespace BeerCellier.Controllers
         [HttpGet]
         public ActionResult Logout()
         {
-            var ctx = Request.GetOwinContext();
-            var authenticationManager = ctx.Authentication;
-
-            authenticationManager.SignOut();
-            
+            _sessionContext.signOut();            
             return RedirectToAction("Index", "Home");
         }
     }

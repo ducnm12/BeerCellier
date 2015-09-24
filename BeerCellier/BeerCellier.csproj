@@ -194,6 +194,7 @@
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\CellarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Core\SessionContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -211,9 +212,11 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Entities\Beer.cs" />
-    <Compile Include="Entities\AppDbContext.cs" />
+    <Compile Include="Core\PersistenceContext.cs" />
     <Compile Include="Models\BeerViewModel.cs" />
     <Compile Include="Models\CreateBeerViewModel.cs" />
+    <Compile Include="Models\DrinkBeerViewModel.cs" />
+    <Compile Include="Models\DeleteBeerViewModel.cs" />
     <Compile Include="Models\EditBeerViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />

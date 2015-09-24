@@ -1,4 +1,5 @@
-﻿using BeerCellier.Entities;
+﻿using BeerCellier.Core;
+using BeerCellier.Entities;
 using BeerCellier.Models;
 using BeerCellier.Queries;
 using PagedList;
@@ -11,18 +12,22 @@ namespace BeerCellier.Controllers
 {
     [Authorize]
     public class CellarController : Controller
-    {
-        private readonly AppDbContext db;
+    { 
+        private readonly IPersistenceContext _persistenceContext;
+        private readonly ISessionContext _sessionContext;
+        public int PageSize { get; }       
 
-        public CellarController(AppDbContext context)
+        public CellarController(IPersistenceContext persistenceContext, ISessionContext sessionContext, int pageSize)
         {
-            db = context;
+            _persistenceContext = persistenceContext;
+            _sessionContext = sessionContext;
+            this.PageSize = pageSize;
         }
 
         // GET: Cellar
         public ActionResult Index(string searchTerm, int? page)
         {
-            var query = db.Beers.ForUser(User);            
+            var query = _persistenceContext.Query<Beer>().ForUser(_sessionContext.GetCurrentLoggedUser());            
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {               
@@ -32,7 +37,7 @@ namespace BeerCellier.Controllers
             query = query.OrderBy(b => b.Name);
 
             var pageNumber = page ?? 1;
-            var model = query.ToViewModels().ToPagedList(pageNumber, 5);
+            var model = query.ToViewModels().ToPagedList(pageNumber, PageSize);
 
             if (Request.IsAjaxRequest())
             {
@@ -50,7 +55,7 @@ namespace BeerCellier.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var beer = db.Beers.FindById(id.Value);
+            var beer = _persistenceContext.Query<Beer>().FindById(id.Value);
             
             if (beer == null)
             {
@@ -81,11 +86,11 @@ namespace BeerCellier.Controllers
                 {
                     Quantity = model.Quantity,
                     Name = model.Name,
-                    Owner = db.Users.FindUser(User)
+                    Owner = _sessionContext.GetCurrentLoggedUser()
                 };
 
-                db.Beers.Add(beer);
-                db.SaveChanges();
+                _persistenceContext.Add(beer);
+                _persistenceContext.SaveChanges();
 
                 return RedirectToAction("Index");          
             }
@@ -101,7 +106,7 @@ namespace BeerCellier.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var beer = db.Beers.FindById(id.Value);
+            var beer = _persistenceContext.Query<Beer>().FindById(id.Value);
 
             if (beer == null)
             {
@@ -122,7 +127,7 @@ namespace BeerCellier.Controllers
         {
             if (ModelState.IsValid)
             {
-                var beer = db.Beers.FindById(model.ID);
+                var beer = _persistenceContext.Query<Beer>().FindById(model.ID);
 
                 if (beer == null)
                 {
@@ -131,9 +136,8 @@ namespace BeerCellier.Controllers
 
                 beer.Name = model.Name;
                 beer.Quantity = model.Quantity;
-
-                db.Entry(beer).State = EntityState.Modified;
-                db.SaveChanges();
+                
+                _persistenceContext.SaveChanges();
 
                 return RedirectToAction("Index");
             }
@@ -148,26 +152,33 @@ namespace BeerCellier.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var beer = db.Beers.Find(id);
+            var beer = _persistenceContext.Query<Beer>().FindById(id.Value);
 
             if (beer == null)
             {
                 return HttpNotFound();
             }
 
-            var model = new BeerViewModel(beer);
+            var model = new BeerViewModel(beer);            
 
             return View(model);
         }
 
         // POST: Cellar/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Delete([Bind(Include = "ID")] DeleteBeerViewModel model)
         {
-            Beer beer = db.Beers.Find(id);
-            db.Beers.Remove(beer);
-            db.SaveChanges();
+            Beer beer = _persistenceContext.Query<Beer>().FindById(model.ID);
+
+            if (beer == null)
+            {
+                return HttpNotFound();
+            }
+
+            _persistenceContext.Remove(beer);
+            _persistenceContext.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
@@ -179,7 +190,7 @@ namespace BeerCellier.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var beer = db.Beers.Find(id);
+            var beer = _persistenceContext.Query<Beer>().FindById(id.Value);
 
             if (beer == null)
             {
@@ -192,11 +203,11 @@ namespace BeerCellier.Controllers
         }
 
         // POST: Cellar/Drink/5
-        [HttpPost, ActionName("Drink")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DrinkConfirmed(int id)
+        public ActionResult Drink([Bind(Include = "ID")] DrinkBeerViewModel model)
         {
-            Beer beer = db.Beers.FindById(id);
+            Beer beer = _persistenceContext.Query<Beer>().FindById(model.ID);
 
             if (beer == null)
             {
@@ -209,9 +220,8 @@ namespace BeerCellier.Controllers
             {
                 beer.Quantity = 0;
             }
-
-            db.Entry(beer).State = EntityState.Modified;
-            db.SaveChanges();
+            
+            _persistenceContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -219,8 +229,8 @@ namespace BeerCellier.Controllers
         // GET: /Cellar/QuickSearch?term=
         public ActionResult QuickSearch(string term)
         {
-            var model = db.Beers
-                .Search(User, term)
+            var model = _persistenceContext.Query<Beer>()
+                .Search(_sessionContext.GetCurrentLoggedUser(), term)
                 .Take(10)
                 .Select(b => new {
                     label = b.Name

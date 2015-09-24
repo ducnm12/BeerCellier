@@ -17,6 +17,21 @@ namespace BeerCellier.Models
             Name = beer.Name;
             Quantity = beer.Quantity;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return ((BeerViewModel)obj).ID == ID;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
     }
 
     public static class BeerViewModelExtension
