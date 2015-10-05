@@ -40,8 +40,15 @@
         </div>
     </div>
     <div class="container body-content">
+        @if (TempData["messageInfo"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                @TempData["messageInfo"]
+            </div>
+        }
         @RenderBody()
-        <hr />
+        <hr>
         <footer>
             <p>&copy; @DateTime.Now.Year - Yan Pearson</p>
         </footer>

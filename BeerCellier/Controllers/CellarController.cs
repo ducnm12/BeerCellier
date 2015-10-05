@@ -92,6 +92,8 @@ namespace BeerCellier.Controllers
                 _persistenceContext.Add(beer);
                 _persistenceContext.SaveChanges();
 
+                TempData["messageInfo"] = "Your beer has been added.";
+
                 return RedirectToAction("Index");          
             }
 
@@ -139,8 +141,11 @@ namespace BeerCellier.Controllers
                 
                 _persistenceContext.SaveChanges();
 
+                TempData["messageInfo"] = "Your modifications has been saved.";
+
                 return RedirectToAction("Index");
             }
+
             return View(model);
         }
 
@@ -178,6 +183,8 @@ namespace BeerCellier.Controllers
 
             _persistenceContext.Remove(beer);
             _persistenceContext.SaveChanges();
+
+            TempData["messageInfo"] = "Your beer has been deleted.";
 
             return RedirectToAction("Index");
         }
@@ -222,6 +229,8 @@ namespace BeerCellier.Controllers
             }
             
             _persistenceContext.SaveChanges();
+
+            TempData["messageInfo"] = "Your modifications has been drinked.";
 
             return RedirectToAction("Index");
         }
